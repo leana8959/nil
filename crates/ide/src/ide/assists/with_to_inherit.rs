@@ -93,48 +93,48 @@ mod tests {
     fn nixos_module() {
         check(
             "{lib, config, pkgs, ...}:
-            $0with lib;
-            {
-                options.example = mkOption {
-                    type = types.attrsOf types.str;
-                    default = { };
-                };
-                environment.systemPackages = with pkgs; [ hello nixfmt nil ];
-            }",
+$0with lib;
+{
+    options.example = mkOption {
+        type = types.attrsOf types.str;
+        default = { };
+    };
+    environment.systemPackages = with pkgs; [ hello nixfmt nil ];
+}",
             expect![[r#"
                 {lib, config, pkgs, ...}:
-                            let inherit (lib) mkOption types; in
-                            {
-                                options.example = mkOption {
-                                    type = types.attrsOf types.str;
-                                    default = { };
-                                };
-                                environment.systemPackages = with pkgs; [ hello nixfmt nil ];
-                            }
+                let inherit (lib) mkOption types; in
+                {
+                    options.example = mkOption {
+                        type = types.attrsOf types.str;
+                        default = { };
+                    };
+                    environment.systemPackages = with pkgs; [ hello nixfmt nil ];
+                }
             "#]],
         );
 
         // a with expression lower down in the ast
         check(
             "{lib, config, pkgs, ...}:
-            with lib;
-            {
-                options.example = mkOption {
-                    type = types.attrsOf types.str;
-                    default = { };
-                };
-                environment.systemPackages = $0with pkgs; [ hello nixfmt nil ];
-            }",
+with lib;
+{
+    options.example = mkOption {
+        type = types.attrsOf types.str;
+        default = { };
+    };
+    environment.systemPackages = $0with pkgs; [ hello nixfmt nil ];
+}",
             expect![[r#"
                 {lib, config, pkgs, ...}:
-                            with lib;
-                            {
-                                options.example = mkOption {
-                                    type = types.attrsOf types.str;
-                                    default = { };
-                                };
-                                environment.systemPackages = let inherit (pkgs) hello nil nixfmt; in [ hello nixfmt nil ];
-                            }
+                with lib;
+                {
+                    options.example = mkOption {
+                        type = types.attrsOf types.str;
+                        default = { };
+                    };
+                    environment.systemPackages = let inherit (pkgs) hello nil nixfmt; in [ hello nixfmt nil ];
+                }
             "#]],
         );
     }
