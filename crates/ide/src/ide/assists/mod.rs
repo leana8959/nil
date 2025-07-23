@@ -22,6 +22,7 @@ mod remove_empty_inherit;
 mod remove_empty_let_in;
 mod remove_unused_binding;
 mod rewrite_string;
+mod with_to_inherit;
 
 use crate::{DefDatabase, FileRange, TextEdit, WorkspaceEdit};
 use syntax::ast::{self, AstNode};
@@ -48,6 +49,7 @@ pub(crate) fn assists(db: &dyn DefDatabase, frange: FileRange) -> Vec<Assist> {
     let handlers = [
         add_to_top_level_lambda_param::add_to_top_level_lambda_param,
         convert_to_inherit::convert_to_inherit,
+        with_to_inherit::convert_to_inherit,
         flatten_attrset::flatten_attrset,
         pack_bindings::pack_bindings,
         remove_empty_inherit::remove_empty_inherit,
