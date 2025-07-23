@@ -91,6 +91,19 @@ mod tests {
 
     #[test]
     fn nixos_module() {
+        check_no(
+            "{lib, config, pkgs, ...}:
+$0with lib;
+with lib.types;
+{
+    options.example = mkOption {
+        type = types.attrsOf types.str;
+        default = { };
+    };
+    environment.systemPackages = with pkgs; [ hello nixfmt nil ];
+}",
+        );
+
         check(
             "{lib, config, pkgs, ...}:
 $0with lib;
