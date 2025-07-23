@@ -137,5 +137,15 @@ with lib;
                 }
             "#]],
         );
+
+        // foo is bound on the outside
+        check(
+            r#"let foo = "foo";
+in pkgs: $0with pkgs; [ foo bar ]"#,
+            expect![[r#"
+                let foo = "foo";
+                in pkgs: let inherit (pkgs) bar; in [ foo bar ]
+            "#]],
+        );
     }
 }
